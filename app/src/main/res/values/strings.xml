@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">People Logger</string>
+
+
+    <string name="action_results">Results</string>
+    <string name="group">Group</string>
+    <string name="gender">Gender</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="age">Age range</string>
+    <string name="logbutton">Log Person</string>
+    <string name="notes">Notes</string>
+    <string-array name="age_ranges">
+        <item>under 18</item>
+        <item>between 18-25</item>
+        <item>between 26-35</item>
+        <item>between 36-45</item>
+        <item>between 46-55</item>
+        <item>between 56-65</item>
+        <item>between 76-75</item>
+        <item>over 75</item>
+    </string-array>
+</resources>
