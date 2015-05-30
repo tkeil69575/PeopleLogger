@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,9 +21,18 @@ public class MainActivity extends Activity implements AdapterView.OnItemSelected
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        String[] groups_list = getResources().getStringArray(R.array.groups_list);
+        // Create Instance of ArrayAdapter and bind it with groups_list array.
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.select_dialog_item, groups_list);
+
+        // Link the Auto Complete Text View
+        AutoCompleteTextView autoText = (AutoCompleteTextView) findViewById(R.id.group);
+        autoText.setThreshold(1); // Start From 1st Character
+        autoText.setAdapter(adapter);
+
         spinner = (Spinner) findViewById(R.id.spinner);
-        ArrayAdapter adapter = ArrayAdapter.createFromResource(this,R.array.age_ranges,android.R.layout.simple_spinner_item);
-        spinner.setAdapter(adapter);
+        ArrayAdapter adapter2 = ArrayAdapter.createFromResource(this, R.array.age_ranges, android.R.layout.simple_spinner_item);
+        spinner.setAdapter(adapter2);
         spinner.setOnItemSelectedListener(this);
     }
 

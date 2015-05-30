@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">People Logger</string>
 
-
     <string name="action_results">Results</string>
     <string name="group">Group</string>
     <string name="gender">Gender</string>
@@ -10,6 +9,7 @@
     <string name="age">Age range</string>
     <string name="logbutton">Log Person</string>
     <string name="notes">Notes</string>
+    <string name="group_auto">Enter a new group</string>
     <string-array name="age_ranges">
         <item>under 18</item>
         <item>between 18-25</item>
@@ -19,5 +19,73 @@
         <item>between 56-65</item>
         <item>between 76-75</item>
         <item>over 75</item>
+    </string-array>
+    <string-array name="groups_list">
+        <item>African (Black)</item>
+        <item>African (White)</item>
+        <item>Albanian</item>
+        <item>American (North)</item>
+        <item>American (South)</item>
+        <item>Arabian</item>
+        <item>Argentinian</item>
+        <item>Armenian</item>
+        <item>Austrian</item>
+        <item>Asian</item>
+        <item>Bengali</item>
+        <item>Berber</item>
+        <item>Brazilian</item>
+        <item>Bulgarian</item>
+        <item>Canadian</item>
+        <item>Chinese</item>
+        <item>Croatian</item>
+        <item>Czech</item>
+        <item>Danish</item>
+        <item>Dutch</item>
+        <item>East Asian</item>
+        <item>East European</item>
+        <item>Egyptian</item>
+        <item>English</item>
+        <item>Estonian</item>
+        <item>Filipino</item>
+        <item>Finish</item>
+        <item>French</item>
+        <item>Georgian</item>
+        <item>German</item>
+        <item>Greek</item>
+        <item>Hungarian</item>
+        <item>Icelandic</item>
+        <item>Indian</item>
+        <item>Iranian</item>
+        <item>Irish (Northern)</item>
+        <item>Irish (South)</item>
+        <item>Italian</item>
+        <item>Japanese</item>
+        <item>Jewish</item>
+        <item>Korean (North)</item>
+        <item>Korean (South)</item>
+        <item>Macedonian</item>
+        <item>Malaysian</item>
+        <item>Mongolian</item>
+        <item>Moroccan</item>
+        <item>Norwegian</item>
+        <item>Persian</item>
+        <item>Polish</item>
+        <item>Portuguese</item>
+        <item>Romanian</item>
+        <item>Russian</item>
+        <item>Scottish</item>
+        <item>Serbian</item>
+        <item>Sindhi</item>
+        <item>Slovakian</item>
+        <item>Spanish</item>
+        <item>Swedish</item>
+        <item>Swiss</item>
+        <item>Thai</item>
+        <item>Tibetan</item>
+        <item>Turkish</item>
+        <item>Ukrainian</item>
+        <item>Vietnamese</item>
+        <item>Welsh</item>
+        <item>West Indian</item>
     </string-array>
 </resources>
