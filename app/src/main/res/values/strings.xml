@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">People Logger</string>
 
-
     <string name="action_results">Results</string>
     <string name="group">Group</string>
     <string name="gender">Gender</string>
@@ -10,6 +9,7 @@
     <string name="age">Age range</string>
     <string name="logbutton">Log Person</string>
     <string name="notes">Notes</string>
+    <string name="group_auto">Enter a new group</string>
     <string-array name="age_ranges">
         <item>under 18</item>
         <item>between 18-25</item>
@@ -19,5 +19,14 @@
         <item>between 56-65</item>
         <item>between 76-75</item>
         <item>over 75</item>
+    </string-array>
+    <string-array name="groups_list">
+        <item>African (Black)</item>
+        <item>Arabic</item>
+        <item>Asian</item>
+        <item>Latino</item>
+        <item>German</item>
+        <item>Italian</item>
+        <item>Polish</item>
     </string-array>
 </resources>
