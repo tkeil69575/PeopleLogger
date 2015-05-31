@@ -95,7 +95,6 @@ class dbOpenHelper extends SQLiteOpenHelper {
                 cursor.getString(5));
 
         // return log
-        cursor.close();
         return plog;
     }
 
@@ -123,7 +122,6 @@ class dbOpenHelper extends SQLiteOpenHelper {
         }
 
         // return plog list
-        cursor.close();
         return plogList;
     }
 
@@ -133,7 +131,6 @@ class dbOpenHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);
         // return count
-        cursor.close();
         return cursor.getCount();
     }
 

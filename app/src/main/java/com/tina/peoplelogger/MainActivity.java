@@ -96,13 +96,13 @@ public class MainActivity extends Activity {
 
         //Toast.makeText(this,"You selected "+GroupName+" "+Sex+" "+AgeRange+" "+DateTime+" "+Notes, Toast.LENGTH_LONG).show();
 
-        //add to database
-        dbOpenHelper db = new dbOpenHelper(this);
-        Log.d("Insert: ", "Inserting ..");
         if (GroupName.isEmpty())  {
             Toast.makeText(this,"Please enter a group", Toast.LENGTH_LONG).show();
         } else {
             //insert into database
+            //add to database
+            dbOpenHelper db = new dbOpenHelper(this);
+            Log.d("Insert: ", "Inserting ..");
             db.addPLog(new PLog(DateTime, GroupName, Sex, AgeRange, Notes));
             Toast.makeText(this,"Log entry added to database", Toast.LENGTH_LONG).show();
 

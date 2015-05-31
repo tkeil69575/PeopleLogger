@@ -10,6 +10,11 @@
     <string name="logbutton">Log Person</string>
     <string name="notes">Notes</string>
     <string name="group_auto"/>
+
+    <string name="title_activity_results">Database</string>
+    <string name="headline">Total entries:</string>
+    <string name="entries"/>
+
     <string-array name="age_ranges">
         <item>under 18</item>
         <item>between 18-25</item>
@@ -89,8 +94,4 @@
         <item>Welsh</item>
         <item>West Indian</item>
     </string-array>
-    <string name="title_activity_results">ResultsActivity</string>
-
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
 </resources>

@@ -6,4 +6,24 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="com.tina.peoplelogger.ResultsActivity">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/headline"
+        android:id="@+id/headline"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/entries"
+        android:id="@+id/entries"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/headline"
+        android:layout_toEndOf="@+id/headline"
+        android:layout_marginLeft="10dp" />
 </RelativeLayout>
