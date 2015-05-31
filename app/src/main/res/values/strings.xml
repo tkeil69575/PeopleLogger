@@ -9,7 +9,7 @@
     <string name="age">Age range</string>
     <string name="logbutton">Log Person</string>
     <string name="notes">Notes</string>
-    <string name="group_auto"></string>
+    <string name="group_auto"/>
     <string-array name="age_ranges">
         <item>under 18</item>
         <item>between 18-25</item>

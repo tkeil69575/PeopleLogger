@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class dbOpenHelper extends SQLiteOpenHelper {
+class dbOpenHelper extends SQLiteOpenHelper {
 
     // Static variables
     // Database Version

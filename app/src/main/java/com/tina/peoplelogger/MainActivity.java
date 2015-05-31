@@ -5,8 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
-import android.view.View;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
@@ -24,7 +24,6 @@ public class MainActivity extends Activity {
     private AutoCompleteTextView groupSuggest;
     private Spinner ageRangeSelect;
     private EditText noteText;
-    private RadioGroup GenderGroup;
     private String Sex;
 
     @Override
@@ -42,8 +41,8 @@ public class MainActivity extends Activity {
         groupSuggest.setAdapter(adapter);
 
         //gender
-        GenderGroup = (RadioGroup) findViewById(R.id.radioGroup);
-        GenderGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        RadioGroup genderGroup = (RadioGroup) findViewById(R.id.radioGroup);
+        genderGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
                 RadioButton checkedRadioButton = (RadioButton) findViewById(checkedId);
@@ -88,8 +87,12 @@ public class MainActivity extends Activity {
         String GroupName = groupSuggest.getText().toString();
         String AgeRange = ageRangeSelect.getSelectedItem().toString();
         String Notes = noteText.getText().toString();
-        Sex = ((Sex.equals("Male")) ? "M" : "F");
+
+        //Clean up some text before we enter it into the db
+        Sex = (Sex == "Male") ? "M" : "F";
         AgeRange = removeWords(AgeRange, "between ");
+        AgeRange = removeWords(AgeRange, "over ");
+        AgeRange = removeWords(AgeRange, "under ");
 
         //Toast.makeText(this,"You selected "+GroupName+" "+Sex+" "+AgeRange+" "+DateTime+" "+Notes, Toast.LENGTH_LONG).show();
 
@@ -119,7 +122,7 @@ public class MainActivity extends Activity {
     }
 
     //remove word
-    public static String removeWords(String word ,String remove) {
+    private static String removeWords(String word, String remove) {
         return word.replace(remove,"");
     }
 

@@ -3,12 +3,12 @@ package com.tina.peoplelogger;
 public class PLog {
 
     //private variables
-    int _id;
-    String _datetime;
-    String _group;
-    String _sex;
-    String _age;
-    String _note;
+    private int _id;
+    private String _datetime;
+    private String _group;
+    private String _sex;
+    private String _age;
+    private String _note;
 
     // Empty constructor
     public PLog(){

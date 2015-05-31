@@ -10,6 +10,5 @@ public class ResultsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_results);
 
-
     }
 }
