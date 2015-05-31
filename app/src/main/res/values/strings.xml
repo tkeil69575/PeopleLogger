@@ -9,7 +9,7 @@
     <string name="age">Age range</string>
     <string name="logbutton">Log Person</string>
     <string name="notes">Notes</string>
-    <string name="group_auto">Enter a new group</string>
+    <string name="group_auto"></string>
     <string-array name="age_ranges">
         <item>under 18</item>
         <item>between 18-25</item>
@@ -89,4 +89,8 @@
         <item>Welsh</item>
         <item>West Indian</item>
     </string-array>
+    <string name="title_activity_results">ResultsActivity</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
 </resources>

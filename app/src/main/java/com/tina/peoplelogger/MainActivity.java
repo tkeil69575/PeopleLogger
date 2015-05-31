@@ -1,20 +1,31 @@
 package com.tina.peoplelogger;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.MenuItem;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends Activity implements AdapterView.OnItemSelectedListener {
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
-    Spinner spinner;
+public class MainActivity extends Activity {
+
+    private AutoCompleteTextView groupSuggest;
+    private Spinner ageRangeSelect;
+    private EditText noteText;
+    private RadioGroup GenderGroup;
+    private String Sex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,25 +37,27 @@ public class MainActivity extends Activity implements AdapterView.OnItemSelected
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.select_dialog_item, groups_list);
 
         // Link the Auto Complete Text View
-        AutoCompleteTextView autoText = (AutoCompleteTextView) findViewById(R.id.group);
-        autoText.setThreshold(1); // Start From 1st Character
-        autoText.setAdapter(adapter);
+        groupSuggest = (AutoCompleteTextView) findViewById(R.id.group);
+        groupSuggest.setThreshold(1); // Start From 1st Character
+        groupSuggest.setAdapter(adapter);
 
-        spinner = (Spinner) findViewById(R.id.spinner);
+        //gender
+        GenderGroup = (RadioGroup) findViewById(R.id.radioGroup);
+        GenderGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
+                RadioButton checkedRadioButton = (RadioButton) findViewById(checkedId);
+                Sex = checkedRadioButton.getText().toString();
+            }
+        });
+
+        //age range
+        ageRangeSelect = (Spinner) findViewById(R.id.spinner);
         ArrayAdapter adapter2 = ArrayAdapter.createFromResource(this, R.array.age_ranges, android.R.layout.simple_spinner_item);
-        spinner.setAdapter(adapter2);
-        spinner.setOnItemSelectedListener(this);
-    }
+        ageRangeSelect.setAdapter(adapter2);
 
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        TextView myText = (TextView) view;
-        Toast.makeText(this,"You selected "+myText.getText(), Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
+        //notes
+        noteText = (EditText)findViewById(R.id.notes);
     }
 
     @Override
@@ -56,16 +69,58 @@ public class MainActivity extends Activity implements AdapterView.OnItemSelected
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+        //Goto new activity listed in menu
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_results) {
-            Toast.makeText(this,"You selected the results", Toast.LENGTH_LONG).show();
+            Intent launchNewIntent = new Intent(MainActivity.this,ResultsActivity.class);
+            startActivityForResult(launchNewIntent, 0);
+            //Toast.makeText(this,"You selected the results", Toast.LENGTH_LONG).show();
         }
 
         return super.onOptionsItemSelected(item);
     }
+
+    public void onButtonClick(View view) {
+        //Assign variables
+        String DateTime = getDateTime();
+        String GroupName = groupSuggest.getText().toString();
+        String AgeRange = ageRangeSelect.getSelectedItem().toString();
+        String Notes = noteText.getText().toString();
+        Sex = ((Sex.equals("Male")) ? "M" : "F");
+        AgeRange = removeWords(AgeRange, "between ");
+
+        //Toast.makeText(this,"You selected "+GroupName+" "+Sex+" "+AgeRange+" "+DateTime+" "+Notes, Toast.LENGTH_LONG).show();
+
+        //add to database
+        dbOpenHelper db = new dbOpenHelper(this);
+        Log.d("Insert: ", "Inserting ..");
+        if (GroupName.isEmpty())  {
+            Toast.makeText(this,"Please enter a group", Toast.LENGTH_LONG).show();
+        } else {
+            //insert into database
+            db.addPLog(new PLog(DateTime, GroupName, Sex, AgeRange, Notes));
+            Toast.makeText(this,"Log entry added to database", Toast.LENGTH_LONG).show();
+
+            //clear text and selection for next entry
+            groupSuggest.setText(null);
+            ageRangeSelect.setSelection(0);
+            noteText.setText(null);
+        }
+    }
+
+    // current Datetime
+    private String getDateTime() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(
+                "yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        Date date = new Date();
+        return dateFormat.format(date);
+    }
+
+    //remove word
+    public static String removeWords(String word ,String remove) {
+        return word.replace(remove,"");
+    }
+
 }

@@ -23,6 +23,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/group_auto"
+        android:hint="Please enter a group"
         android:id="@+id/group"
         android:layout_below="@+id/textView"
         android:layout_alignParentLeft="true"
@@ -118,6 +119,7 @@
         android:layout_height="wrap_content"
         android:text="@string/logbutton"
         android:id="@+id/button"
-        android:layout_alignParentBottom="true" />
+        android:layout_alignParentBottom="true"
+        android:onClick="onButtonClick" />
 
 </RelativeLayout>
