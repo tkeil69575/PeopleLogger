@@ -4,7 +4,8 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="com.tina.peoplelogger.ResultsActivity">
+    tools:context="com.tina.peoplelogger.ResultsActivity"
+    android:id="@+id/top5">
 
     <TextView
         android:layout_width="wrap_content"
@@ -38,4 +39,25 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:onClick="backupDatabase" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/top5headline"
+        android:id="@+id/top5headline"
+        android:layout_below="@+id/headline"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="20dp" />
+
+    <ListView
+        android:layout_width="fill_parent"
+        android:layout_height="330dp"
+        android:id="@+id/top5list"
+        android:layout_below="@+id/top5headline"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="5dp"
+        android:footerDividersEnabled="true" />
 </RelativeLayout>

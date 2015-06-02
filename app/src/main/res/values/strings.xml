@@ -13,6 +13,7 @@
 
     <string name="title_activity_results">Database</string>
     <string name="headline">Total entries:</string>
+    <string name="top5headline">Top xx groups</string>
     <string name="btnBackup">Backup Entries</string>
     <string name="entries"/>
 

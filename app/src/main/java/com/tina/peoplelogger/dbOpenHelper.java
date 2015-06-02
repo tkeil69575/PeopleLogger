@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -137,9 +138,11 @@ class dbOpenHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 PLog plog = new PLog();
-                //plog.setID(Integer.parseInt(cursor.getString(0)));
-                plog.setGroup(cursor.getString(2));
-                plog.setAge(cursor.getString(4));
+                //String topgroup = cursor.getString(cursor.getColumnIndex("groups"));
+                //int number = cursor.getInt(cursor.getColumnIndex("number"));
+                plog.setGroup(cursor.getString(cursor.getColumnIndex("groups")));
+                plog.setID(Integer.parseInt(cursor.getString(1)));
+
 
                 // Add log to list
                 plogList.add(plog);
@@ -148,6 +151,36 @@ class dbOpenHelper extends SQLiteOpenHelper {
 
         // return plog list
         return plogList;
+    }
+
+    public ArrayList<HashMap<String, String>> getTop5List() {
+        //Open connection to read only
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selectQuery =  "SELECT  " +
+                KEY_GROUP + "," +
+                "count(" + KEY_GROUP + ") AS number" +
+                " FROM " + TABLE_PLOGS +
+                " GROUP BY " + KEY_GROUP +
+                " ORDER BY " + "number DESC" +
+                " LIMIT 5";
+
+        ArrayList<HashMap<String, String>> top5List = new ArrayList<HashMap<String, String>>();
+
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                HashMap<String, String> topgroup = new HashMap<String, String>();
+                topgroup.put("Group", cursor.getString(cursor.getColumnIndex(KEY_GROUP)));
+                topgroup.put("Number", cursor.getString(cursor.getColumnIndex("number")));
+                top5List.add(topgroup);
+
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+        return top5List;
     }
 
     // Get log count
