@@ -89,10 +89,11 @@ public class MainActivity extends Activity {
         String Notes = noteText.getText().toString();
 
         //Clean up some text before we enter it into the db
-        Sex = (Sex == "Male") ? "M" : "F";
-        AgeRange = removeWords(AgeRange, "between ");
-        AgeRange = removeWords(AgeRange, "over ");
-        AgeRange = removeWords(AgeRange, "under ");
+        Sex = Sex.replaceAll("Male","M");
+        Sex = Sex.replaceAll("Female","F");
+        AgeRange = AgeRange.replaceAll("between","");
+        AgeRange = AgeRange.replaceAll("over ",">");
+        AgeRange = AgeRange.replaceAll("under ","<");
 
         //Toast.makeText(this,"You selected "+GroupName+" "+Sex+" "+AgeRange+" "+DateTime+" "+Notes, Toast.LENGTH_LONG).show();
 
@@ -119,11 +120,6 @@ public class MainActivity extends Activity {
                 "yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         Date date = new Date();
         return dateFormat.format(date);
-    }
-
-    //remove word
-    private static String removeWords(String word, String remove) {
-        return word.replace(remove,"");
     }
 
 }

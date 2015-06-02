@@ -125,6 +125,31 @@ class dbOpenHelper extends SQLiteOpenHelper {
         return plogList;
     }
 
+    // Get top 5 groups
+    public List<PLog> getTop5PLogs() {
+        List<PLog> plogList = new ArrayList<>();
+        String selectQuery = "SELECT groups, count(groups) as number FROM "+ TABLE_PLOGS +
+                " GROUP BY groups ORDER BY number DESC LIMIT 5";
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // loop through all rows and add to list
+        if (cursor.moveToFirst()) {
+            do {
+                PLog plog = new PLog();
+                //plog.setID(Integer.parseInt(cursor.getString(0)));
+                plog.setGroup(cursor.getString(2));
+                plog.setAge(cursor.getString(4));
+
+                // Add log to list
+                plogList.add(plog);
+            } while (cursor.moveToNext());
+        }
+
+        // return plog list
+        return plogList;
+    }
+
     // Get log count
     public int getPLogCount() {
         String countQuery = "SELECT * FROM " + TABLE_PLOGS;
