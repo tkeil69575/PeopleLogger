@@ -1,7 +1,6 @@
 package com.tina.peoplelogger;
 
 import android.app.Activity;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -65,10 +64,10 @@ public class ResultsActivity extends Activity {
             mylist[0] = cn.getGroup(); //this adds an element to the list.
             mylist[1] = "" + cn.getID() + "";
         }
-        ArrayList<String> testlist = new ArrayList<String>();
+        ArrayList<String> testlist = new ArrayList<>();
         testlist.addAll(Arrays.asList(mylist));
 
-        listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, testlist);
+        listAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, testlist);
         top5list.setAdapter(listAdapter);
 
     }
@@ -76,11 +75,9 @@ public class ResultsActivity extends Activity {
     public void backupDatabase(View view) throws IOException {
         if (Environment.getExternalStorageState() != null) {
             File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/PLogBackup");
-            if (!dir.exists()) {
-                dir.mkdir();
-            }
+            if (!dir.exists()) dir.mkdir();
 
-            String fromPath = "";
+            String fromPath;
             if (android.os.Build.VERSION.SDK_INT >= 4.2) {
                 fromPath = getApplicationInfo().dataDir + "/databases/" + "peopleLoggerDb";
             } else {
