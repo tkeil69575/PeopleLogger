@@ -1,6 +1,6 @@
 package com.tina.peoplelogger;
 
-public class PLog {
+class PLog {
 
     //private variables
     private int _id;

@@ -14,7 +14,6 @@ import java.util.ArrayList;
 
 public class ResultsActivity extends Activity {
 
-    private ListView top5list;
     public static String PACKAGE_NAME;
     public static ApplicationInfo PACKAGE_APPINFO;
 
@@ -33,7 +32,7 @@ public class ResultsActivity extends Activity {
         final TextView Entries = (TextView) findViewById(R.id.entries);
         Entries.setText(String.valueOf(total));
 
-        top5list = (ListView) findViewById(R.id.top5list);
+        ListView top5list = (ListView) findViewById(R.id.top5list);
         ArrayList<String> top5listarr = db.getTop5PLogs();
 
         //connects list to adapter
@@ -44,8 +43,8 @@ public class ResultsActivity extends Activity {
 
     public void onClickImportBtn(View view) throws IOException {
         dbOpenHelper db = new dbOpenHelper(this);
-        int status = db.importDatabase();
-        if (status == 1) {
+        boolean status = db.importDatabase();
+        if (status) {
             Toast.makeText(this,"Import successful", Toast.LENGTH_LONG).show();
             //refresh the activity display
             finish();
@@ -57,8 +56,8 @@ public class ResultsActivity extends Activity {
 
     public void onClickBackupBtn(View view) throws IOException {
         dbOpenHelper db = new dbOpenHelper(this);
-        int status = db.backupDatabase();
-        if (status == 1) {
+        boolean status = db.backupDatabase();
+        if (status) {
             Toast.makeText(this,"Backup successful", Toast.LENGTH_LONG).show();
         } else {
             Toast.makeText(this,"Backup FAILED!!", Toast.LENGTH_LONG).show();

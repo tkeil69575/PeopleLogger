@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.List;
 
 class dbOpenHelper extends SQLiteOpenHelper {
 
@@ -94,20 +93,22 @@ class dbOpenHelper extends SQLiteOpenHelper {
         int i = 0;
 
         // loop through all rows and add to list
-        while (!cursor.isAfterLast()) {
-            i++;
-            plogList.add(
-                    i + ". "
-                    + cursor.getString(cursor.getColumnIndex(KEY_GROUP))
-                    + " ("
-                    + cursor.getString(cursor.getColumnIndex("number"))
-                    + ")"
-            );
-            cursor.moveToNext();
+        try {
+            while (!cursor.isAfterLast()) {
+                i++;
+                plogList.add(
+                        i + ". " + cursor.getString(cursor.getColumnIndex(KEY_GROUP))
+                        + " (" + cursor.getString(cursor.getColumnIndex("number")) + ")"
+                );
+                cursor.moveToNext();
+            }
+        } finally {
+            if (cursor != null && !cursor.isClosed())
+                cursor.close();
+                db.close();
         }
 
         // return plog list
-        cursor.close();
         return plogList;
     }
 
@@ -144,11 +145,12 @@ class dbOpenHelper extends SQLiteOpenHelper {
     }
 
     //import database from SdCard
-    public int importDatabase() throws IOException {
-        int status = 0;
+    public boolean importDatabase() throws IOException {
+        boolean status = false;
         if (Environment.getExternalStorageState() != null) {
             File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
                     +  File.separator + DATABASE_IMPORT_DIR);
+
             String toPath;
             if (android.os.Build.VERSION.SDK_INT >= 4.2) {
                 toPath = ResultsActivity.PACKAGE_APPINFO.dataDir + "/databases/" + DATABASE_NAME;
@@ -166,7 +168,7 @@ class dbOpenHelper extends SQLiteOpenHelper {
             File file = new File(fromPath);
             if (file.exists()) {
                 //copy file to internal storage folder for app
-                status = 1;
+                status = true;
                 fileCopy(file, new File(toPath));
             }
         }
@@ -174,46 +176,45 @@ class dbOpenHelper extends SQLiteOpenHelper {
     }
 
     //Export Database to SdCard
-    public int backupDatabase() throws IOException {
-        int status = 0;
+    public boolean backupDatabase() throws IOException {
+        boolean status = false;
         if (Environment.getExternalStorageState() != null) {
             File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
                     +  File.separator + DATABASE_BACKUP_DIR);
-            boolean success = true;
             if (!dir.exists()) {
-                success = dir.mkdir();
-            }
-            if (success) {
-                // Do something on success
+                //if directory does not exist try to create it
+                status = dir.mkdir();
             } else {
-                // Do something else on failure
+                status = true;
             }
+            if (status) {
+                status = false; //reset status
+                String fromPath;
+                if (android.os.Build.VERSION.SDK_INT >= 4.2) {
+                    fromPath = ResultsActivity.PACKAGE_APPINFO.dataDir + "/databases/" + DATABASE_NAME;
+                } else {
+                    fromPath = "/data/data/" + ResultsActivity.PACKAGE_NAME + "/databases/" + DATABASE_NAME;
+                }
 
-            String fromPath;
-            if (android.os.Build.VERSION.SDK_INT >= 4.2) {
-                fromPath = ResultsActivity.PACKAGE_APPINFO.dataDir + "/databases/" + DATABASE_NAME;
-            } else {
-                fromPath = "/data/data/" + ResultsActivity.PACKAGE_NAME + "/databases/" + DATABASE_NAME;
-            }
+                String toPath = dir.getAbsolutePath() + File.separator + DATABASE_NAME;
 
-            String toPath = dir.getAbsolutePath() + File.separator + DATABASE_NAME;
+                SQLiteDatabase db = this.getReadableDatabase();
+                db.close();
 
-            SQLiteDatabase db = this.getReadableDatabase();
-            db.close();
+                //copy file to external storage folder for app
+                fileCopy(new File(fromPath), new File(toPath));
+                File file = new File(toPath);
 
-            //copy file to external storage folder for app
-            fileCopy(new File(fromPath), new File(toPath));
-            File file = new File(toPath);
-
-            //check to see if backup db exists
-            if (file.exists()) {
-                status = 1;
+                //check to see if backup db exists
+                if (file.exists()) {
+                    status = true;
+                }
             }
         }
         return status;
     }
 
-    public void fileCopy(File src, File dst) throws IOException {
+    private void fileCopy(File src, File dst) throws IOException {
         InputStream in = new FileInputStream(src);
         OutputStream out = new FileOutputStream(dst);
         int len;
