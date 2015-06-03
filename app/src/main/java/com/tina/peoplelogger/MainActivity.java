@@ -1,6 +1,7 @@
 package com.tina.peoplelogger;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -42,6 +43,8 @@ public class MainActivity extends Activity {
 
         //gender
         RadioGroup genderGroup = (RadioGroup) findViewById(R.id.radioGroup);
+        RadioButton male = (RadioButton) findViewById(R.id.male);
+        Sex = male.getText().toString();
         genderGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
@@ -75,7 +78,6 @@ public class MainActivity extends Activity {
         if (id == R.id.action_results) {
             Intent launchNewIntent = new Intent(MainActivity.this,ResultsActivity.class);
             startActivityForResult(launchNewIntent, 0);
-            //Toast.makeText(this,"You selected the results", Toast.LENGTH_LONG).show();
         }
 
         return super.onOptionsItemSelected(item);
@@ -89,23 +91,20 @@ public class MainActivity extends Activity {
         String Notes = noteText.getText().toString();
 
         //Clean up some text before we enter it into the db
-        Sex = Sex.replaceAll("Male","M");
-        Sex = Sex.replaceAll("Female","F");
+        if (Sex != null && Sex.equalsIgnoreCase("Male")) Sex = Sex.replaceAll("Male", "M");
+        if (Sex != null && Sex.equalsIgnoreCase("Female")) Sex = Sex.replaceAll("Female", "F");
         AgeRange = AgeRange.replaceAll("between","");
         AgeRange = AgeRange.replaceAll("over ",">");
         AgeRange = AgeRange.replaceAll("under ","<");
-
-        //Toast.makeText(this,"You selected "+GroupName+" "+Sex+" "+AgeRange+" "+DateTime+" "+Notes, Toast.LENGTH_LONG).show();
 
         if (GroupName.isEmpty())  {
             Toast.makeText(this,"Please enter a group", Toast.LENGTH_LONG).show();
         } else {
             //insert into database
-            //add to database
             dbOpenHelper db = new dbOpenHelper(this);
             Log.d("Insert: ", "Inserting ..");
             db.addPLog(new PLog(DateTime, GroupName, Sex, AgeRange, Notes));
-            Toast.makeText(this,"Log entry added to database", Toast.LENGTH_LONG).show();
+            Toast.makeText(this,"Entry added to database", Toast.LENGTH_LONG).show();
 
             //clear text and selection for next entry
             groupSuggest.setText(null);

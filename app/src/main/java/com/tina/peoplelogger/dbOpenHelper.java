@@ -5,11 +5,16 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Environment;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-
 
 class dbOpenHelper extends SQLiteOpenHelper {
 
@@ -17,8 +22,12 @@ class dbOpenHelper extends SQLiteOpenHelper {
     // Database Version
     private static final int DATABASE_VERSION = 1;
 
+    // Database import and backup folder names
+    private static final String DATABASE_IMPORT_DIR = "PLogImport";
+    private static final String DATABASE_BACKUP_DIR = "PLogBackup";
+
     // Database Name
-    private static final String DATABASE_NAME = "peopleLoggerDb";
+    private static final String DATABASE_NAME = "peopleLogger.sqlite";
 
     // PLogs table name
     private static final String TABLE_PLOGS = "PLogs";
@@ -38,7 +47,7 @@ class dbOpenHelper extends SQLiteOpenHelper {
     // Create Table
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_PLOG_TABLE = "CREATE TABLE " + TABLE_PLOGS + "("
+        String CREATE_PLOG_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_PLOGS + "("
                 + KEY_ID + " INTEGER PRIMARY KEY,"
                 + KEY_DATETIME + " TEXT,"
                 + KEY_GROUP + " TEXT,"
@@ -73,114 +82,33 @@ class dbOpenHelper extends SQLiteOpenHelper {
         db.close(); // Close db connection
     }
 
-    // Get single log
-    public PLog getPLog(int id) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_PLOGS, new String[]{
-                        KEY_ID,
-                        KEY_DATETIME,
-                        KEY_GROUP,
-                        KEY_AGE,
-                        KEY_NOTE
-                }, KEY_ID + "=?",
-                new String[]{String.valueOf(id)}, null, null, null, null);
-
-        if (cursor != null) cursor.moveToFirst();
-
-        PLog plog = new PLog(
-                Integer.parseInt(cursor.getString(0)),
-                cursor.getString(1),
-                cursor.getString(2),
-                cursor.getString(3),
-                cursor.getString(4),
-                cursor.getString(5));
-
-        // return log
-        return plog;
-    }
-
-    // Get all logs
-    public List<PLog> getAllPLogs() {
-        List<PLog> plogList = new ArrayList<>();
-        String selectQuery = "SELECT * FROM " + TABLE_PLOGS;
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery, null);
-
-        // loop through all rows and add to list
-        if (cursor.moveToFirst()) {
-            do {
-                PLog plog = new PLog();
-                plog.setID(Integer.parseInt(cursor.getString(0)));
-                plog.setDatetime(cursor.getString(1));
-                plog.setGroup(cursor.getString(2));
-                plog.setSex(cursor.getString(3));
-                plog.setAge(cursor.getString(4));
-                plog.setNote(cursor.getString(5));
-
-                // Add log to list
-                plogList.add(plog);
-            } while (cursor.moveToNext());
-        }
-
-        // return plog list
-        return plogList;
-    }
-
     // Get top 5 groups
-    public List<PLog> getTop5PLogs() {
-        List<PLog> plogList = new ArrayList<>();
+    public ArrayList<String> getTop5PLogs() {
+        ArrayList<String> plogList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
         String selectQuery = "SELECT groups, count(groups) as number FROM "+ TABLE_PLOGS +
                 " GROUP BY groups ORDER BY number DESC LIMIT 5";
-        SQLiteDatabase db = this.getWritableDatabase();
+
         Cursor cursor = db.rawQuery(selectQuery, null);
+        cursor.moveToFirst();
+        int i = 0;
 
         // loop through all rows and add to list
-        if (cursor.moveToFirst()) {
-            do {
-                PLog plog = new PLog();
-                //String topgroup = cursor.getString(cursor.getColumnIndex("groups"));
-                //int number = cursor.getInt(cursor.getColumnIndex("number"));
-                plog.setGroup(cursor.getString(cursor.getColumnIndex("groups")));
-                plog.setID(Integer.parseInt(cursor.getString(1)));
-
-
-                // Add log to list
-                plogList.add(plog);
-            } while (cursor.moveToNext());
+        while (!cursor.isAfterLast()) {
+            i++;
+            plogList.add(
+                    i + ". "
+                    + cursor.getString(cursor.getColumnIndex(KEY_GROUP))
+                    + " ("
+                    + cursor.getString(cursor.getColumnIndex("number"))
+                    + ")"
+            );
+            cursor.moveToNext();
         }
 
         // return plog list
-        return plogList;
-    }
-
-    public ArrayList<HashMap<String, String>> getTop5List() {
-        //Open connection to read only
-        SQLiteDatabase db = this.getReadableDatabase();
-        String selectQuery =  "SELECT  " +
-                KEY_GROUP + "," +
-                "count(" + KEY_GROUP + ") AS number" +
-                " FROM " + TABLE_PLOGS +
-                " GROUP BY " + KEY_GROUP +
-                " ORDER BY " + "number DESC" +
-                " LIMIT 5";
-
-        ArrayList<HashMap<String, String>> top5List = new ArrayList<HashMap<String, String>>();
-
-        Cursor cursor = db.rawQuery(selectQuery, null);
-        // looping through all rows and adding to list
-        if (cursor.moveToFirst()) {
-            do {
-                HashMap<String, String> topgroup = new HashMap<String, String>();
-                topgroup.put("Group", cursor.getString(cursor.getColumnIndex(KEY_GROUP)));
-                topgroup.put("Number", cursor.getString(cursor.getColumnIndex("number")));
-                top5List.add(topgroup);
-
-            } while (cursor.moveToNext());
-        }
-
         cursor.close();
-        db.close();
-        return top5List;
+        return plogList;
     }
 
     // Get log count
@@ -211,7 +139,90 @@ class dbOpenHelper extends SQLiteOpenHelper {
     public void deletePLog(PLog plog) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_PLOGS, KEY_ID + " = ?",
-                new String[] { String.valueOf(plog.getID()) });
+                new String[]{String.valueOf(plog.getID())});
         db.close();
     }
+
+    //import database from SdCard
+    public int importDatabase() throws IOException {
+        int status = 0;
+        if (Environment.getExternalStorageState() != null) {
+            File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
+                    +  File.separator + DATABASE_IMPORT_DIR);
+            String toPath;
+            if (android.os.Build.VERSION.SDK_INT >= 4.2) {
+                toPath = ResultsActivity.PACKAGE_APPINFO.dataDir + "/databases/" + DATABASE_NAME;
+            } else {
+                toPath = "/data/data/" + ResultsActivity.PACKAGE_NAME + "/databases/" + DATABASE_NAME;
+            }
+
+            String fromPath = dir.getAbsolutePath() + File.separator + DATABASE_NAME;
+
+            //close current database
+            SQLiteDatabase db = this.getReadableDatabase();
+            db.close();
+
+            //check to see if import db exists
+            File file = new File(fromPath);
+            if (file.exists()) {
+                //copy file to internal storage folder for app
+                status = 1;
+                fileCopy(file, new File(toPath));
+            }
+        }
+        return status;
+    }
+
+    //Export Database to SdCard
+    public int backupDatabase() throws IOException {
+        int status = 0;
+        if (Environment.getExternalStorageState() != null) {
+            File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
+                    +  File.separator + DATABASE_BACKUP_DIR);
+            boolean success = true;
+            if (!dir.exists()) {
+                success = dir.mkdir();
+            }
+            if (success) {
+                // Do something on success
+            } else {
+                // Do something else on failure
+            }
+
+            String fromPath;
+            if (android.os.Build.VERSION.SDK_INT >= 4.2) {
+                fromPath = ResultsActivity.PACKAGE_APPINFO.dataDir + "/databases/" + DATABASE_NAME;
+            } else {
+                fromPath = "/data/data/" + ResultsActivity.PACKAGE_NAME + "/databases/" + DATABASE_NAME;
+            }
+
+            String toPath = dir.getAbsolutePath() + File.separator + DATABASE_NAME;
+
+            SQLiteDatabase db = this.getReadableDatabase();
+            db.close();
+
+            //copy file to external storage folder for app
+            fileCopy(new File(fromPath), new File(toPath));
+            File file = new File(toPath);
+
+            //check to see if backup db exists
+            if (file.exists()) {
+                status = 1;
+            }
+        }
+        return status;
+    }
+
+    public void fileCopy(File src, File dst) throws IOException {
+        InputStream in = new FileInputStream(src);
+        OutputStream out = new FileOutputStream(dst);
+        int len;
+        byte[] buf = new byte[1024];
+        while ((len = in.read(buf)) > 0) {
+            out.write(buf, 0, len);
+        }
+        in.close();
+        out.close();
+    }
 }
+

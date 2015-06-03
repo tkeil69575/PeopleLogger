@@ -36,9 +36,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:onClick="backupDatabase" />
+        android:onClick="onClickBackupBtn" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -53,11 +51,23 @@
 
     <ListView
         android:layout_width="fill_parent"
-        android:layout_height="330dp"
+        android:layout_height="230dp"
         android:id="@+id/top5list"
         android:layout_below="@+id/top5headline"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="5dp"
-        android:footerDividersEnabled="true" />
+        android:footerDividersEnabled="true"
+        android:headerDividersEnabled="true"
+        android:layout_marginTop="10dp"
+        android:dividerHeight="1dp"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/btnImport"
+        android:id="@+id/btnImport"
+        android:layout_alignTop="@+id/btnBackup"
+        android:layout_alignRight="@+id/top5list"
+        android:layout_alignEnd="@+id/top5list"
+        android:onClick="onClickImportBtn" />
 </RelativeLayout>
